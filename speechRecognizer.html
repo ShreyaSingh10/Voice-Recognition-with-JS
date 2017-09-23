@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang ="en">
+	<head>
+	<meta charset="UTF-8">
+	<title>Voice Recognizer</title>
+	</head>
+
+	<body>
+	<div class ="words" contenteditable>
+	</div>
+		<style>
+			html{
+				font-size: 10px;
+			}
+			body{
+				background:#ffc600;
+				font-family:'helvetica neue';
+				font-weight: 200;
+				font-size: 20px;
+			}
+
+			.words {
+				max-width: 500px;
+				margin:50px auto;
+				background:white;
+				border-radius: 5px;
+
+			}
+		</style>
+		<script>
+		window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+		//Speech recognition is the global variable that lives inside the browser on top of the window, on chrome it lives in WebkitSpeechRecognition
+
+		//creating new instance of speech recognition
+		const recognition = new SpeechRecognition();
+		//to populate or see what we are speaking
+		recognition.interimResults =true;
+
+		//create a paragraph we are using let because
+		let p=document.createElement('p');
+		//fetching words and appending
+		const word = document.querySelector('.words');
+		word.appendChild(p);
+
+        recognition.addEventListener('result' , e => {
+			console.log(e.results);
+			//converting lis to array n then 
+			const transcript = Array.from(e.results).map(result => result[0]).map(result =>result.transcript).join('')
+			//to add all the text into one paragraph
+			p.textContent = transcript;
+			
+			//if the speaker takes a pause for sometime it will create a new paragraph
+			if(e.results[0].isFinal){
+				p =document.createElement('p');
+				word.appendChild(p);
+			}
+			if(transcript.contains('get the weather')){
+				console.log('Getting the weather');
+			}
+			console.log(transcript);
+		});
+		//once we stop speaking it will stop listening in order to make it listen to us again we add an end even Listener
+		recognition.addEventListener('end', recognition.start);
+		recognition.start();
+
+		
+
+		</script>
+		
+	</body>
+	</html>
